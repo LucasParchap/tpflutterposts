@@ -73,3 +73,4 @@ web/favicon.png
 
 # Lockfiles (optional, include if you want to lock dependency versions)
 # pubspec.lock
+devtools_options.yaml

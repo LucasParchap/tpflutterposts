@@ -22,6 +22,9 @@ class UpdatePost extends PostEvent {
   final Post updatedPost;
 
   const UpdatePost({required this.updatedPost});
+
+  @override
+  List<Object> get props => [updatedPost];
 }
 
 class DeletePost extends PostEvent {

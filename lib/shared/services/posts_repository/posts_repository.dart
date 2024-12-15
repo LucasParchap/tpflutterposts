@@ -12,4 +12,7 @@ class PostRepository {
   Future<Post> createPost(Post newPost) async {
     return await postsDataSource.createPost(newPost);
   }
+  Future<Post> updatePost(Post updatedPost) async {
+    return await postsDataSource.updatePost(updatedPost);
+  }
 }

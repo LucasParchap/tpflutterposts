@@ -28,6 +28,18 @@ class FakePostsDataSource extends PostsDataSource {
     _mutablePosts.add(postToAdd);
     return postToAdd;
   }
+  @override
+  Future<Post> updatePost(Post updatedPost) async {
+    print('Simulating update in data source');
+    await Future.delayed(const Duration(seconds: 10));
+    final index = _mutablePosts.indexWhere((post) => post.id == updatedPost.id);
+    if (index != -1) {
+      _mutablePosts[index] = updatedPost;
+      print('Post updated in data source');
+    }
+    return updatedPost;
+  }
+
 }
 
 

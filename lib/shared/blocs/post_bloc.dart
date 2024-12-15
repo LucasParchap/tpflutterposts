@@ -13,6 +13,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({required this.postRepository}) : super(const PostState()) {
     on<GetAllPosts>(_onGetAllPosts);
     on<CreatePost>(_onCreatePost);
+    on<UpdatePost>(_onUpdatePost);
   }
 
   Future<void> _onGetAllPosts(GetAllPosts event, Emitter<PostState> emit) async {
@@ -48,4 +49,29 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
   }
+
+  Future<void> _onUpdatePost(UpdatePost event, Emitter<PostState> emit) async {
+    emit(state.copyWith(status: PostStatus.loading));
+
+    try {
+      await Future.delayed(const Duration(seconds: 3));
+
+      final updatedPost = await postRepository.updatePost(event.updatedPost);
+
+      final updatedPosts = state.posts.map((post) {
+        return post.id == updatedPost.id ? updatedPost : post;
+      }).toList();
+
+      emit(state.copyWith(
+        posts: updatedPosts,
+        status: PostStatus.successUpdating,
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        status: PostStatus.error,
+        exception: AppException.from(error),
+      ));
+    }
+  }
+
 }
