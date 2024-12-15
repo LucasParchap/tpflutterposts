@@ -55,8 +55,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     emit(state.copyWith(status: PostStatus.loading));
 
     try {
-      await Future.delayed(const Duration(seconds: 3));
-
       final updatedPost = await postRepository.updatePost(event.updatedPost);
 
       final updatedPosts = state.posts.map((post) {
@@ -91,6 +89,4 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
   }
-
-
 }

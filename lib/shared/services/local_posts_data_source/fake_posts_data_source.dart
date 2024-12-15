@@ -30,7 +30,7 @@ class FakePostsDataSource extends PostsDataSource {
   }
   @override
   Future<Post> updatePost(Post updatedPost) async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     final index = _mutablePosts.indexWhere((post) => post.id == updatedPost.id);
     if (index != -1) {
       _mutablePosts[index] = updatedPost;
@@ -42,7 +42,6 @@ class FakePostsDataSource extends PostsDataSource {
     await Future.delayed(const Duration(seconds: 1));
     _mutablePosts.removeWhere((post) => post.id == postToDelete.id);
   }
-
 }
 
 

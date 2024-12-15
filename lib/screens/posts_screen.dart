@@ -83,6 +83,7 @@ class PostsScreen extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, '/createPost');
         },
+        backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.add),
       ),
     );
@@ -102,7 +103,6 @@ class PostsScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // Envoie l'événement DeletePost
                 context.read<PostBloc>().add(DeletePost(postToDelete: post));
                 Navigator.of(dialogContext).pop();
               },

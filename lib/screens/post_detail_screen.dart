@@ -34,15 +34,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   void _submitUpdate() {
     if (_formKey.currentState!.validate()) {
       final updatedPost = Post(
-        id: widget.post.id, // L'ID reste inchangé
+        id: widget.post.id,
         title: _titleController.text,
         description: _descriptionController.text,
       );
 
-      // Envoie l'événement UpdatePost au Bloc
       context.read<PostBloc>().add(UpdatePost(updatedPost: updatedPost));
 
-      // Sortir du mode édition
       setState(() {
         _isEditing = false;
       });
@@ -53,67 +51,134 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Modifier le post' : 'Détail du post'),
+        title: Text(_isEditing ? 'Modifier le post' : 'Détail post'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Champ pour le titre (modifiable ou non selon le mode)
-              if (!_isEditing)
-                Text(
-                  _titleController.text,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                )
-              else
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Titre',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => value == null || value.isEmpty ? 'Le titre ne peut pas être vide' : null,
-                ),
-              const SizedBox(height: 20),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 5,
+              shadowColor: Colors.grey.withOpacity(0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Titre
+                      _isEditing
+                          ? TextFormField(
+                        controller: _titleController,
+                        style: const TextStyle(color: Colors.black87),
+                        maxLength: 30, // Limite de 30 caractères
+                        decoration: InputDecoration(
+                          labelText: 'Titre',
+                          counterText: "",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Le titre ne peut pas être vide';
+                          } else if (value.length > 30) {
+                            return 'Le titre ne doit pas dépasser 30 caractères';
+                          }
+                          return null;
+                        },
+                      )
+                          : Text(
+                        _titleController.text,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
 
-              // Champ pour la description (modifiable ou non selon le mode)
-              if (!_isEditing)
-                Text(
-                  _descriptionController.text,
-                  style: const TextStyle(fontSize: 16),
-                )
-              else
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                  validator: (value) => value == null || value.isEmpty ? 'La description ne peut pas être vide' : null,
-                ),
-              if (_isEditing)
-                const SizedBox(height: 20),
+                      // Description
+                      _isEditing
+                          ? TextFormField(
+                        controller: _descriptionController,
+                        maxLines: 5,
+                        style: const TextStyle(color: Colors.black87),
+                        decoration: InputDecoration(
+                          labelText: 'Description',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'La description ne peut pas être vide'
+                            : null,
+                      )
+                          : Text(
+                        _descriptionController.text,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 30),
 
-              // Bouton pour valider les modifications en mode édition
-              if (_isEditing)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submitUpdate,
-                    child: const Text('Enregistrer les modifications'),
+                      if (_isEditing)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _submitUpdate,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'Enregistrer',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                    ],
                   ),
                 ),
-            ],
+              ),
+            ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _toggleEditMode,
-        child: Icon(_isEditing ? Icons.check : Icons.edit),
+        backgroundColor: Colors.blueAccent,
+        child: Icon(
+          _isEditing ? Icons.check : Icons.edit,
+          color: Colors.white,
+        ),
         tooltip: _isEditing ? 'Valider' : 'Modifier',
       ),
     );
