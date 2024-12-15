@@ -14,6 +14,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<GetAllPosts>(_onGetAllPosts);
     on<CreatePost>(_onCreatePost);
     on<UpdatePost>(_onUpdatePost);
+    on<DeletePost>(_onDeletePost);
   }
 
   Future<void> _onGetAllPosts(GetAllPosts event, Emitter<PostState> emit) async {
@@ -73,5 +74,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       ));
     }
   }
+  Future<void> _onDeletePost(DeletePost event, Emitter<PostState> emit) async {
+    emit(state.copyWith(status: PostStatus.loading));
+    try {
+      await postRepository.deletePost(event.postToDelete);
+      final updatedPosts = state.posts.where((post) => post.id != event.postToDelete.id).toList();
+
+      emit(state.copyWith(
+        posts: updatedPosts,
+        status: PostStatus.successDeleting,
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        status: PostStatus.error,
+        exception: AppException.from(error),
+      ));
+    }
+  }
+
 
 }

@@ -6,6 +6,7 @@ enum PostStatus {
   successLoading,
   successCreating,
   successUpdating,
+  successDeleting,
   error
 }
 

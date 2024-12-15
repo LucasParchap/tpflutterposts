@@ -15,4 +15,7 @@ class PostRepository {
   Future<Post> updatePost(Post updatedPost) async {
     return await postsDataSource.updatePost(updatedPost);
   }
+  Future<void> deletePost(Post postToDelete) async {
+    await postsDataSource.deletePost(postToDelete);
+  }
 }

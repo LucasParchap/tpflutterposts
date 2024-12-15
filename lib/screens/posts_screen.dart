@@ -18,6 +18,10 @@ class PostsScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Post modifié avec succès !')),
                 );
+              } else if (state.status == PostStatus.successDeleting) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Post supprimé avec succès !')),
+                );
               } else if (state.status == PostStatus.error) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.exception?.message ?? 'Une erreur est survenue')),
@@ -32,7 +36,8 @@ class PostsScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state.status == PostStatus.successLoading ||
                 state.status == PostStatus.successCreating ||
-                state.status == PostStatus.successUpdating) {
+                state.status == PostStatus.successUpdating ||
+                state.status == PostStatus.successDeleting) {
               if (state.posts.isEmpty) {
                 return const Center(child: Text('Aucun post disponible.'));
               }
@@ -43,6 +48,12 @@ class PostsScreen extends StatelessWidget {
                   return ListTile(
                     title: Text(post.title),
                     subtitle: Text(post.description),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _showDeleteConfirmation(context, post);
+                      },
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -68,13 +79,41 @@ class PostsScreen extends StatelessWidget {
           },
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/createPost');
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, post) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content: const Text('Voulez-vous vraiment supprimer ce post ?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Envoie l'événement DeletePost
+                context.read<PostBloc>().add(DeletePost(postToDelete: post));
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text(
+                'Supprimer',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
