@@ -12,11 +12,12 @@ class PostsScreen extends StatelessWidget {
       ),
       body: BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {
+          print('Current state: ${state.status}');
           if (state.status == PostStatus.loading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state.status == PostStatus.successLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state.status == PostStatus.successLoading || state.status == PostStatus.successCreating) {
             if (state.posts.isEmpty) {
-              return Center(child: Text('Aucun post disponible.'));
+              return const Center(child: Text('Aucun post disponible.'));
             }
             return ListView.builder(
               itemCount: state.posts.length,
@@ -40,18 +41,21 @@ class PostsScreen extends StatelessWidget {
             return Center(
               child: Text(
                 state.exception?.message ?? 'Une erreur est survenue',
-                style: TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.red),
               ),
             );
+          } else if (state.status == PostStatus.initial) {
+            return const Center(child: Text('Chargement des posts...'));
           }
-          return Center(child: Text('Aucun état valide.'));
+          return const Center(child: Text('Aucun état valide.'));
         },
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Naviguer vers l'écran de création de post
+          Navigator.pushNamed(context, '/createPost');
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

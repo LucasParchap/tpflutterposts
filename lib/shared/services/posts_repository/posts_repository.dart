@@ -9,4 +9,7 @@ class PostRepository {
   Future<List<Post>> getAllPosts() async {
     return await postsDataSource.getAllPosts();
   }
+  Future<Post> createPost(Post newPost) async {
+    return await postsDataSource.createPost(newPost);
+  }
 }

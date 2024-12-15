@@ -9,10 +9,13 @@ class GetAllPosts extends PostEvent {
   const GetAllPosts();
 }
 
-class AddPost extends PostEvent {
-  final Post post;
+class CreatePost extends PostEvent {
+  final Post newPost;
 
-  const AddPost({required this.post});
+  const CreatePost(this.newPost);
+
+  @override
+  List<Object> get props => [newPost];
 }
 
 class UpdatePost extends PostEvent {

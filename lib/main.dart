@@ -6,6 +6,7 @@ import 'shared/services/local_posts_data_source/fake_posts_data_source.dart';
 import 'screens/posts_screen.dart';
 import 'screens/post_detail_screen.dart';
 import 'shared/models/Post.dart';
+import 'screens/create_post_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           ),
           routes: {
             '/': (context) => PostsScreen(),
+            '/createPost': (context) => const CreatePostScreen(),
           },
           onGenerateRoute: (routeSettings) {
             Widget screen = const Scaffold(
@@ -45,6 +47,9 @@ class MyApp extends StatelessWidget {
                 if (arguments is Post) {
                   screen = PostDetailScreen(post: arguments);
                 }
+                break;
+              case '/createPost':
+                screen = const CreatePostScreen();
                 break;
             }
             return MaterialPageRoute(builder: (context) => screen);

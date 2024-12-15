@@ -4,13 +4,8 @@ enum PostStatus {
   initial,
   loading,
   successLoading,
-  adding,
-  successAdding,
-  updating,
-  successUpdating,
-  deleting,
-  successDeleting,
-  error,
+  successCreating,
+  error
 }
 
 class PostState {
